@@ -4,14 +4,15 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-GDP Data Pipeline — an ETL and EDA project that merges historical (1960–2020) and recent (2020–2025) GDP CSV data into a unified 60-year longitudinal time series, then performs exploratory analysis and visualization.
+GDP Data Pipeline — an ETL and EDA project that merges historical (1960–2020) and recent (2020–2025) GDP CSV data into a unified 66-year longitudinal time series (1960–2025, 196 countries), then performs structured exploratory analysis and visualization.
 
 ## Setup
 
 ```bash
 # Create and activate virtual environment
 python -m venv .venv
-source .venv/bin/activate  # Windows: .venv\Scripts\activate
+.venv\Scripts\activate        # Windows
+# source .venv/bin/activate   # macOS / Linux
 
 # Install dependencies
 pip install -r requirements.txt
@@ -26,7 +27,14 @@ The pipeline runs in two sequential stages:
 
 1. **[01_preprocessing.ipynb](01_preprocessing.ipynb)** — ETL stage: loads `data/1960-2020.csv` and `data/2020-2025.csv`, cleans and merges them, outputs `data/full_gdp_data_1960_2020.csv`.
 
-2. **[02_EDA.ipynb](02_EDA.ipynb)** — Analysis stage: loads the merged dataset and produces visualizations (line charts, trend analysis per country).
+2. **[02_EDA.ipynb](02_EDA.ipynb)** — Analysis stage: loads the merged dataset and runs a 7-section structured EDA:
+   - **Section 1** — Data quality & missing values (bar chart, time-series, heatmap)
+   - **Section 2** — Summary statistics & GDP distribution (linear and log-scale histograms, decade box plots)
+   - **Section 3** — Global temporal trends (world GDP area chart annotated with major shocks, YoY growth rate)
+   - **Section 4** — Growth analysis (CAGR rankings, decade medians, GDP level vs volatility scatter)
+   - **Section 5** — Concentration & inequality (world GDP share stacked area, G2 share, Gini coefficient over time)
+   - **Section 6** — Notable country trajectories (China vs US, Asian Tigers, Japan's Lost Decades, post-Soviet transitions, Latin America)
+   - **Section 7** — Economic shocks deep dive (2008–09 GFC country impact, COVID-19 shock vs recovery scatter)
 
 ## Data Files
 
@@ -44,7 +52,7 @@ The pipeline runs in two sequential stages:
 | `Year` | int64 | Year (1960–2025) |
 | `GDP` | float64 | GDP in billions of USD (current); 1,990 null values where data is unavailable |
 
-~11,376 rows (196 countries × 66 years, minus missing combinations). GDP ranges from ~0.01 to ~30,507 (United States, 2025).
+~11,376 rows (196 countries × 66 years, minus missing combinations). GDP ranges from ~0.01 to ~30,507 (United States, 2025). **Null values are intentionally not imputed** — they represent genuine absence of statistical reporting (small island nations, post-colonial and post-Soviet states in early decades). Treating them as zeros would distort aggregate and growth calculations.
 
 ## Tech Stack
 
